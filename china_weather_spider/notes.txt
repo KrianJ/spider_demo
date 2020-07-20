@@ -1,0 +1,44 @@
+### 1. 爬取华北地区所有城市天气报告：http://www.weather.com.cn/textFC/hb.shtml
+    """div .contentboxTab
+    > h1
+    > div .contentboxTab1
+        > div .contentboxTab2
+            > ul .lq_contentboxTab2
+            > div .lQCity
+            > ul .day_tabs
+            > div .hanml"""
+### 2. 爬取全国城市天气信息
+### 3. 将数据可视化
+
+### 解析流程
+    获取请求resp
+    解析内容(resp.text/resp.content.decode('utf-8'))
+    变成soup
+    解析soup
+
+## 省/直辖市文档树，每个省/直辖市一个conMindtab2
+    (div .hanml > div .conMidtab)[0]
+        >div .conMidtab2
+            > table
+                > tbody
+                    > tr
+        >div .conMidtab2
+            > table
+                > tbody
+                    > tr
+        ...
+
+## 注意事项：
+    港澳台页面的table标签没有结束标记</table>，使用lxml解析器无法避免这种不规范table
+    需要使用html5lib解析器我吐了
+    港澳台页面文档树
+    >div .conMidtab2
+        > table         <!--香港-->
+            > tbody
+                    > tr
+        > table         <!--澳门-->
+            > tbody
+                    > tr
+        > table         <!--台湾-->
+            > tbody
+                    > tr

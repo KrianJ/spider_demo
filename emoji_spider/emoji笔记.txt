@@ -1,0 +1,30 @@
+## 目标url："http://www.doutula.com/article/list/?page=%d" % page
+文件结构
+    div .col-sm-9 center-wrap
+        a .list-group-item random_list(/stg-article)?
+            div .random_title
+            div .random_article
+                div .col-xs-6 col-sm-3
+                    img .lazy image_dtb img-responsive(/sloaded)?
+                    p
+
+    图片地址
+        <img data-original='url'>
+# 查看xpath提取出来的html
+    etree.tostring(html_code)
+# 新方法
+    1. 分割文件名和后缀
+        os.path.splitext(filename)      <class tuple>
+    2. 下载图片到指定文件夹
+        urllib.request.urlretrieve(url, path)
+
+## 消费者与生产者模式下多线程异步爬虫：
+    生产者: 产出每个emoji的url下载链接(img_url)
+    消费者: 下载生产出的url链接(request.urlretrieve)
+
+### GIL(global interpreter lock)全局解释器锁
+    python的解释器是CPython, 实际上python的多线程是单CPU运行
+    因为CPython解释器中的内存管理不是线程安全的，所以需要GIL
+
+    对于需要大量IO操作的多线程，GIL也能很大提升效率
+    CPU计算密集操作建议使用多进程

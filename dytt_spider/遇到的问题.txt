@@ -1,0 +1,25 @@
+## 'gbk' codec can't encode character '\xXX' in position XX
+报错的实际上是f.write这个方法，于是明白了这是因为TXT文件的默认编码是GBK而不是Unicode。于是便做了一个小小的改动，代码如下：
+
+    import codecs
+    f = codecs.open('D:\\test.txt','w','utf-8')
+    a = '\ue863'
+    print(a)
+    f.write(a)
+    f.close()
+————————————————
+版权声明：本文为CSDN博主「yq0632」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/yq0632/article/details/80254587
+
+## 列表，字符串，字典相互转化
+
+## 字典写入文件
+# 一、使用json转换方法 ：
+    写入：js = json.dumps(dic)
+          file.write(js)
+    读取：
+        js = file.read()
+        dic = json.loads(js)
+# 二、使用str转换方法
+    写入：f.write(str(dic))
+    读取：eval(file.read())
