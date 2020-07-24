@@ -11,6 +11,7 @@ from selenium.webdriver import ActionChains
 from selenium.common.exceptions import TimeoutException
 import time
 from bs4 import BeautifulSoup
+from random import randint
 # 数据库
 from tb_spider.config import *
 import pymongo
@@ -25,7 +26,7 @@ db = client[MONGO_DB]
 # b = 'WangJianZuiShuaiWJZSwj'
 # 1.使用chrome浏览器
 chrome_option = webdriver.ChromeOptions()
-chrome_option.add_argument('headless')
+# chrome_option.add_argument('headless')
 chrome_option.add_experimental_option('excludeSwitches', ['enable-automation'])     # 使用开发者模式
 driver = webdriver.Chrome(options=chrome_option)
 driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
@@ -69,6 +70,30 @@ def search(key_word):
     return None
 
 
+def get_track(distance):      # distance为传入的总距离
+    """将轨迹长度拆分，模拟登录验证行为"""
+    tracks = []
+    steps = randint(4, 6)
+    for step in range(steps):
+        if step < steps-1:
+            offset = randint(6, 12)  # 每段位移的偏移量
+            step_dis = distance // steps - offset
+            tracks.append(step_dis)
+        else:
+            tracks.append(distance-sum(tracks))
+    return tracks
+
+
+def move_to_gap(slider, tracks):     # slider是要移动的滑块,tracks是要传入的移动轨迹
+
+    action = ActionChains(driver)
+    action.click_and_hold(slider).perform()  # perform()用来执行ActionChains中存储的行为
+    for x in tracks:
+        ActionChains(driver).move_by_offset(xoffset=x, yoffset=0).perform()
+    time.sleep(0.5)
+    ActionChains(driver).release().perform()
+
+
 def login():
     """淘宝自动化登录"""
     try:
@@ -91,10 +116,7 @@ def login():
         slip_square = wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, '#nc_1_n1z'))
         )
-        action = ActionChains(driver)
-        action.click_and_hold(slip_square).perform()    # perform()用来执行ActionChains中存储的行为
-        action.reset_actions()
-        action.move_by_offset(258, 0).perform()
+        move_to_gap(slip_square, get_track(258))
 
         # 点击登录
         login_submit.click()
@@ -161,11 +183,11 @@ def save_to_mongo(result, MONGO_TABLE):
 
 
 if __name__ == '__main__':
-    key_word = '内存条'
-    kw_trans = 'RAM'
+    key_word = '主板'
+    kw_trans = '主板'
     try:
         search(key_word)
-        for page in range(1, 101):
+        for page in range(1, 3):
             html = to_page(page)
             items = parse_index(html)
             save_to_mongo(items, kw_trans)
