@@ -185,9 +185,10 @@ def save_to_mongo(result, MONGO_TABLE):
 if __name__ == '__main__':
     key_word = '主板'
     kw_trans = '主板'
+    max_page = 100
     try:
         search(key_word)
-        for page in range(1, 3):
+        for page in range(1, max_page+1):
             html = to_page(page)
             items = parse_index(html)
             save_to_mongo(items, kw_trans)
