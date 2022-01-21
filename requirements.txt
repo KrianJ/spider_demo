@@ -19,7 +19,7 @@ html5lib==1.0.1
 hyperlink==19.0.0
 idna==2.7
 incremental==17.5.0
-ipython==7.13.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 itemadapter==0.1.0
 jedi==0.16.0
